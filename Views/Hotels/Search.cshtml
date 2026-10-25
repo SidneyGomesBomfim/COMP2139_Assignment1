@@ -1,0 +1,99 @@
+@model HotelSearchViewModel
+@{
+    ViewData["Title"] = "Hotel Search";
+}
+
+<h1 class="h3 mb-3">Search Hotels</h1>
+
+<form asp-action="Search" method="get" data-validate-prices>
+
+    @* 1. Search parameters (3). The values typed stay visible after searching. *@
+    <div class="card mb-4">
+        <div class="card-body">
+            <div class="row g-3 align-items-end">
+                <div class="col-md-4">
+                    <label asp-for="Location" class="form-label">Location</label>
+                    <input asp-for="Location" class="form-control" placeholder="e.g., Toronto" />
+                </div>
+                <div class="col-md-3">
+                    <label asp-for="MinStars" class="form-label">Minimum stars</label>
+                    <select asp-for="MinStars" class="form-select">
+                        <option value="">Any</option>
+                        @for (var i = 1; i <= 5; i++)
+                        {
+                            <option value="@i">@i+ stars</option>
+                        }
+                    </select>
+                </div>
+                <div class="col-md-3">
+                    <label asp-for="Rooms" class="form-label">Rooms needed</label>
+                    <select asp-for="Rooms" class="form-select">
+                        @for (var i = 1; i <= 5; i++)
+                        {
+                            <option value="@i">@i</option>
+                        }
+                    </select>
+                </div>
+                <div class="col-md-2 d-grid">
+                    <button type="submit" class="btn btn-dark">Search</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="row">
+        @* 2. Filter: price range per night *@
+        <aside class="col-lg-3 mb-4">
+            <div class="card">
+                <div class="card-body">
+                    <h2 class="h5">Filter</h2>
+                    <p class="fw-semibold small mb-1">Price per night</p>
+                    <div class="row g-2 mb-2">
+                        <div class="col-6">
+                            <input asp-for="MinPrice" type="number" min="0" step="1" class="form-control" placeholder="Min $" aria-label="Minimum price" />
+                        </div>
+                        <div class="col-6">
+                            <input asp-for="MaxPrice" type="number" min="0" step="1" class="form-control" placeholder="Max $" aria-label="Maximum price" />
+                        </div>
+                    </div>
+                    <div id="priceError" class="text-danger small mb-2 d-none">The minimum price cannot be higher than the maximum price.</div>
+                    <button type="submit" class="btn btn-outline-dark w-100">Apply Filters</button>
+                </div>
+            </div>
+        </aside>
+
+        <section class="col-lg-9">
+            <div class="d-flex flex-wrap justify-content-between align-items-center mb-3 gap-2">
+                <h2 class="h5 mb-0">@Model.Results.Count @(Model.Results.Count == 1 ? "hotel" : "hotels") found</h2>
+
+                @* 3. Sort *@
+                <div class="d-flex align-items-center">
+                    <label asp-for="SortOrder" class="me-2 text-nowrap">Sort by</label>
+                    <select asp-for="SortOrder" class="form-select" data-autosubmit>
+                        <option value="price_asc">Price: Low to High</option>
+                        <option value="price_desc">Price: High to Low</option>
+                        <option value="rating">Star rating</option>
+                        <option value="name">Name (A to Z)</option>
+                    </select>
+                </div>
+            </div>
+
+            @* 4. Results, or a clear message when nothing matches *@
+            @if (Model.Results.Any())
+            {
+                foreach (var hotel in Model.Results)
+                {
+                    <partial name="_HotelCard" model="hotel" />
+                }
+            }
+            else
+            {
+                <div class="alert alert-warning" role="alert">
+                    <strong>No hotels match your search.</strong>
+                    Try another location, fewer stars or rooms, or a wider price range.
+                    <a asp-action="Search" class="alert-link">Clear search</a>
+                </div>
+            }
+        </section>
+    </div>
+</form>

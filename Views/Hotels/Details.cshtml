@@ -1,0 +1,55 @@
+@model Hotel
+@{
+    ViewData["Title"] = Model.Name;
+}
+
+<nav aria-label="breadcrumb">
+    <ol class="breadcrumb">
+        <li class="breadcrumb-item"><a asp-action="Index">Hotels</a></li>
+        <li class="breadcrumb-item"><a asp-action="Search">Search Results</a></li>
+        <li class="breadcrumb-item active" aria-current="page">@Model.Name</li>
+    </ol>
+</nav>
+
+<div class="row g-4">
+    <div class="col-md-6">
+        <div class="detail-image">
+            @if (!string.IsNullOrWhiteSpace(Model.ImageUrl))
+            {
+                <img src="@Model.ImageUrl" alt="@Model.Name" />
+            }
+            else
+            {
+                <span aria-hidden="true">🏨</span>
+            }
+        </div>
+    </div>
+
+    <div class="col-md-6">
+        <h1 class="h2">@Model.Name</h1>
+        <p class="mb-1"><span class="text-warning">@Model.StarsText</span> <span class="text-muted small">@Model.StarRating-star</span></p>
+        <p class="text-muted">@Model.Location · @Model.Address</p>
+
+        <p class="mb-3">
+            <span class="fs-3 fw-bold">@Model.PricePerNight.ToString("C0")</span>
+            <span class="text-muted">/ night</span>
+            <span class="ms-3">Rooms available: <strong>@Model.RoomsAvailable</strong></span>
+        </p>
+
+        <h2 class="h6">Amenities</h2>
+        <p>
+            @foreach (var amenity in Model.AmenityList)
+            {
+                <span class="badge rounded-pill text-bg-light border me-1">@amenity</span>
+            }
+        </p>
+
+        @if (!string.IsNullOrWhiteSpace(Model.Description))
+        {
+            <p>@Model.Description</p>
+        }
+
+        <a class="btn btn-outline-dark" asp-action="Search" data-back-link>← Back to Search Results</a>
+        <a class="btn btn-outline-dark" asp-action="Index">All Hotels</a>
+    </div>
+</div>

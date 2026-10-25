@@ -1,0 +1,22 @@
+@model IEnumerable<Flight>
+@{
+    ViewData["Title"] = "Flights";
+}
+
+<div class="d-flex flex-wrap justify-content-between align-items-center mb-3">
+    <h1 class="h3 mb-0">All Flights</h1>
+    <a class="btn btn-dark" asp-action="Search">Search Flights</a>
+</div>
+
+@if (Model.Any())
+{
+    <p class="text-muted">@Model.Count() flights available.</p>
+    foreach (var flight in Model)
+    {
+        <partial name="_FlightCard" model="flight" />
+    }
+}
+else
+{
+    <div class="alert alert-info">There are no flights to show yet.</div>
+}

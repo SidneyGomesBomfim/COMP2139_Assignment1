@@ -1,0 +1,22 @@
+@model IEnumerable<Hotel>
+@{
+    ViewData["Title"] = "Hotels";
+}
+
+<div class="d-flex flex-wrap justify-content-between align-items-center mb-3">
+    <h1 class="h3 mb-0">All Hotels</h1>
+    <a class="btn btn-dark" asp-action="Search">Search Hotels</a>
+</div>
+
+@if (Model.Any())
+{
+    <p class="text-muted">@Model.Count() hotels available.</p>
+    foreach (var hotel in Model)
+    {
+        <partial name="_HotelCard" model="hotel" />
+    }
+}
+else
+{
+    <div class="alert alert-info">There are no hotels to show yet.</div>
+}

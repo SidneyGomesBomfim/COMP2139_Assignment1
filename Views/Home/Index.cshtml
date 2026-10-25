@@ -1,0 +1,109 @@
+@model HomeViewModel
+@{
+    ViewData["Title"] = "Home";
+}
+
+<section class="text-center mb-4">
+    <h1 class="display-6 fw-bold">Where to next?</h1>
+    <p class="text-muted">Search flights and hotels and compare your options.</p>
+</section>
+
+<section class="search-panel mx-auto mb-5">
+    <ul class="nav nav-tabs" id="searchTabs" role="tablist">
+        <li class="nav-item" role="presentation">
+            <button class="nav-link active" id="flights-tab" data-bs-toggle="tab" data-bs-target="#flights-pane"
+                    type="button" role="tab" aria-controls="flights-pane" aria-selected="true">Flights</button>
+        </li>
+        <li class="nav-item" role="presentation">
+            <button class="nav-link" id="hotels-tab" data-bs-toggle="tab" data-bs-target="#hotels-pane"
+                    type="button" role="tab" aria-controls="hotels-pane" aria-selected="false">Hotels</button>
+        </li>
+    </ul>
+
+    <div class="tab-content border border-top-0 rounded-bottom p-3 bg-white">
+        <div class="tab-pane fade show active" id="flights-pane" role="tabpanel" aria-labelledby="flights-tab">
+            <form asp-controller="Flights" asp-action="Search" method="get">
+                <div class="row g-3 align-items-end">
+                    <div class="col-md-3">
+                        <label for="f-origin" class="form-label">From</label>
+                        <input id="f-origin" name="Origin" class="form-control" placeholder="e.g., Toronto (YYZ)" />
+                    </div>
+                    <div class="col-md-3">
+                        <label for="f-destination" class="form-label">To</label>
+                        <input id="f-destination" name="Destination" class="form-control" placeholder="e.g., Vancouver (YVR)" />
+                    </div>
+                    <div class="col-md-3">
+                        <label for="f-date" class="form-label">Departure Date</label>
+                        <input id="f-date" name="DepartureDate" type="date" class="form-control" value="2026-11-02" />
+                    </div>
+                    <div class="col-md-2">
+                        <label for="f-pax" class="form-label">Passengers</label>
+                        <select id="f-pax" name="Passengers" class="form-select">
+                            @for (var i = 1; i <= 9; i++)
+                            {
+                                <option value="@i">@i</option>
+                            }
+                        </select>
+                    </div>
+                    <div class="col-md-1 d-grid">
+                        <button type="submit" class="btn btn-dark">Search</button>
+                    </div>
+                </div>
+            </form>
+        </div>
+
+        <div class="tab-pane fade" id="hotels-pane" role="tabpanel" aria-labelledby="hotels-tab">
+            <form asp-controller="Hotels" asp-action="Search" method="get">
+                <div class="row g-3 align-items-end">
+                    <div class="col-md-4">
+                        <label for="h-location" class="form-label">Location</label>
+                        <input id="h-location" name="Location" class="form-control" placeholder="e.g., Toronto" />
+                    </div>
+                    <div class="col-md-3">
+                        <label for="h-stars" class="form-label">Minimum stars</label>
+                        <select id="h-stars" name="MinStars" class="form-select">
+                            <option value="">Any</option>
+                            @for (var i = 1; i <= 5; i++)
+                            {
+                                <option value="@i">@i+ stars</option>
+                            }
+                        </select>
+                    </div>
+                    <div class="col-md-3">
+                        <label for="h-rooms" class="form-label">Rooms needed</label>
+                        <select id="h-rooms" name="Rooms" class="form-select">
+                            @for (var i = 1; i <= 5; i++)
+                            {
+                                <option value="@i">@i</option>
+                            }
+                        </select>
+                    </div>
+                    <div class="col-md-2 d-grid">
+                        <button type="submit" class="btn btn-dark">Search</button>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+</section>
+
+<section>
+    <h2 class="h4 mb-3">Featured Deals</h2>
+    <div class="row g-3">
+        @foreach (var deal in Model.Deals)
+        {
+            <div class="col-md-4">
+                <div class="card h-100">
+                    <div class="deal-image" aria-hidden="true">@deal.Icon</div>
+                    <div class="card-body">
+                        <h3 class="h6 fw-bold">@deal.Title</h3>
+                        <p class="text-muted small mb-2">@deal.Subtitle</p>
+                        <p class="fw-bold mb-3">@deal.PriceText</p>
+                        <a class="btn btn-outline-dark btn-sm stretched-link" asp-controller="@deal.Controller"
+                           asp-action="Details" asp-route-id="@deal.Id">View Details</a>
+                    </div>
+                </div>
+            </div>
+        }
+    </div>
+</section>

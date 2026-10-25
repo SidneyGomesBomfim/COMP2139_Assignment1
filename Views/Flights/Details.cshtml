@@ -1,0 +1,63 @@
+@model Flight
+@{
+    ViewData["Title"] = $"{Model.Airline} {Model.FlightNumber}";
+    var totalMinutes = (int)Model.Duration.TotalMinutes;
+}
+
+<nav aria-label="breadcrumb">
+    <ol class="breadcrumb">
+        <li class="breadcrumb-item"><a asp-action="Index">Flights</a></li>
+        <li class="breadcrumb-item"><a asp-action="Search">Search Results</a></li>
+        <li class="breadcrumb-item active" aria-current="page">@Model.Airline @Model.FlightNumber</li>
+    </ol>
+</nav>
+
+<div class="row g-4">
+    <div class="col-md-5">
+        <div class="detail-image">
+            @if (!string.IsNullOrWhiteSpace(Model.ImageUrl))
+            {
+                <img src="@Model.ImageUrl" alt="@Model.Airline" />
+            }
+            else
+            {
+                <span aria-hidden="true">✈</span>
+            }
+        </div>
+    </div>
+
+    <div class="col-md-7">
+        <h1 class="h2">@Model.Airline <span class="text-muted fs-5">@Model.FlightNumber</span></h1>
+        <p class="lead mb-2">@Model.Origin → @Model.Destination</p>
+        <p class="mb-3">
+            <span class="fs-3 fw-bold">@Model.Price.ToString("C0")</span>
+            <span class="text-muted">per passenger</span>
+        </p>
+
+        <dl class="row">
+            <dt class="col-sm-4">Departure</dt>
+            <dd class="col-sm-8">@Model.DepartureTime.ToString("ddd, MMM d, yyyy 'at' HH:mm")</dd>
+
+            <dt class="col-sm-4">Arrival</dt>
+            <dd class="col-sm-8">@Model.ArrivalTime.ToString("ddd, MMM d, yyyy 'at' HH:mm")</dd>
+
+            <dt class="col-sm-4">Duration</dt>
+            <dd class="col-sm-8">@(totalMinutes / 60) h @(totalMinutes % 60) min (@Model.StopsText)</dd>
+
+            <dt class="col-sm-4">Seats available</dt>
+            <dd class="col-sm-8">
+                @if (Model.SeatsAvailable > 0)
+                {
+                    <span class="badge text-bg-success">@Model.SeatsAvailable seats left</span>
+                }
+                else
+                {
+                    <span class="badge text-bg-secondary">Sold out</span>
+                }
+            </dd>
+        </dl>
+
+        <a class="btn btn-outline-dark" asp-action="Search" data-back-link>← Back to Search Results</a>
+        <a class="btn btn-outline-dark" asp-action="Index">All Flights</a>
+    </div>
+</div>
